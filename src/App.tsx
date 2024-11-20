@@ -1,7 +1,10 @@
+import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
 import { useState } from "react";
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
+
+  const walletAddress = useAddress()
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -11,7 +14,10 @@ const App = () => {
   return (
     <div className={`h-screen flex flex-col items-center justify-center ${darkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-900"}`}>
       <header className="text-center">
-        <h1 className="text-4xl font-bold mb-6">
+      <ConnectWallet
+        theme={darkMode ? "dark" : "light"} 
+      />
+        <h1 className="text-4xl font-bold mt-2 mb-6">
           EmpeerDen Blockchain Webinar 02
         </h1>
         <p className="text-lg mb-8">
@@ -24,6 +30,9 @@ const App = () => {
           Toggle {darkMode ? "Light" : "Dark"} Mode
         </button>
       </header>
+      <section>
+        {walletAddress? `Your Address is ${walletAddress}`: `Please connect wallet`}
+      </section>
     </div>
   );
 };
