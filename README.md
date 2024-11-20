@@ -1,50 +1,88 @@
-# React + TypeScript + Vite
+# Wallet Connect React App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+This React application integrates a Wallet Connect button using the Thirdweb SDK. Follow the instructions below to set it up locally.
 
-Currently, two official plugins are available:
+## Prerequisites
+- **Node.js** (v14+)
+- **Yarn** installed globally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Setup Instructions
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Th3Un1qu3M4n/EmpeerDen-Wallet-Connect.git
+cd wallet-connect-app
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### 2. Install Dependencies
+```bash
+yarn install
 ```
+
+### 3. Install Thirdweb SDK
+```bash
+yarn add @thirdweb-dev/react @thirdweb-dev/sdk ethers
+```
+
+### 4. Add the Wallet Connect Button
+
+#### **`src/components/WalletConnect.tsx`**
+```javascript,
+import React from "react";
+import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
+
+const WalletConnect = () => {
+  const connectWithMetamask = useMetamask();
+  const disconnectWallet = useDisconnect();
+  const address = useAddress();
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      {address ? (
+        <div className="text-center">
+          <p className="mb-4">Connected Wallet: {address}</p>
+          <button
+            className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={disconnectWallet}
+          >
+            Disconnect Wallet
+          </button>
+        </div>
+      ) : (
+        <button
+          className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={connectWithMetamask}
+        >
+          Connect Wallet
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default WalletConnect;
+```
+
+#### **`src/App.tsx`**
+```javascript
+import React from "react";
+import WalletConnect from "./components/WalletConnect";
+import "./index.css";
+
+const App = () => {
+  return (
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900">
+      <h1 className="text-4xl font-bold mb-6">EmpeerDen Blockchain Webinar 02</h1>
+      <WalletConnect />
+    </div>
+  );
+};
+
+export default App;
+```
+### 4. Start the Development Server
+```bash
+yarn run dev
+```
+Open http://localhost:3000 in your browser
