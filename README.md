@@ -6,6 +6,7 @@ This React application integrates a Wallet Connect button using the Thirdweb SDK
 ## Prerequisites
 - **Node.js** (v14+)
 - **Yarn** installed globally
+- **React** basic knowledege
 
 ## Setup Instructions
 
@@ -21,60 +22,62 @@ yarn install
 ```
 
 ### 3. Install Thirdweb SDK
+Install the packages
 ```bash
-yarn add @thirdweb-dev/react @thirdweb-dev/sdk ethers
+npm i @thirdweb-dev/react @thirdweb-dev/sdk ethers@^5
+```
+Install the vite plugins
+```bash
+yarn add @vitejs/plugin-react vite-plugin-node-polyfills -D
+```
+In the **`vite.config.js file`**, add the following configuration:
+```javascript
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
+export default defineConfig({
+  plugins: [react(), nodePolyfills()],
+  define: {
+    "process.env": {},
+  },
+});
+s
 ```
 
-### 4. Add the Wallet Connect Button
+### 4. Wrap the ThirdWeb Provider
 
-#### **`src/components/WalletConnect.tsx`**
-```javascript,
-import React from "react";
-import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
+#### **`src/main.tsx`**
+```javascript
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+import { ThirdwebProvider } from '@thirdweb-dev/react'
 
-const WalletConnect = () => {
-  const connectWithMetamask = useMetamask();
-  const disconnectWallet = useDisconnect();
-  const address = useAddress();
-
-  return (
-    <div className="flex flex-col items-center justify-center">
-      {address ? (
-        <div className="text-center">
-          <p className="mb-4">Connected Wallet: {address}</p>
-          <button
-            className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            onClick={disconnectWallet}
-          >
-            Disconnect Wallet
-          </button>
-        </div>
-      ) : (
-        <button
-          className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={connectWithMetamask}
-        >
-          Connect Wallet
-        </button>
-      )}
-    </div>
-  );
-};
-
-export default WalletConnect;
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ThirdwebProvider activeChain="ethereum">
+      <App />
+    </ThirdwebProvider>
+  </StrictMode>,
+)
 ```
 
 #### **`src/App.tsx`**
 ```javascript
 import React from "react";
-import WalletConnect from "./components/WalletConnect";
-import "./index.css";
+import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
 
 const App = () => {
+
+  const walletAddress = useAddress() // Hook to get the address
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900">
+      <ConnectWallet
+        theme={darkMode ? "dark" : "light"} // adjust color based on theme
+      />
       <h1 className="text-4xl font-bold mb-6">EmpeerDen Blockchain Webinar 02</h1>
-      <WalletConnect />
     </div>
   );
 };
@@ -86,3 +89,7 @@ export default App;
 yarn run dev
 ```
 Open http://localhost:5173 in your browser
+
+
+### More Details
+[Getting Started with ThirdWeb React SDK](https://portal.thirdweb.com/react/v4/getting-started)
