@@ -6,7 +6,7 @@ This React application integrates a Wallet Connect button using the Thirdweb SDK
 ## Prerequisites
 - **Node.js** (v14+)
 - **Yarn** installed globally
-- **React** basic knowledege
+- **React** basic knowledge
 
 ## Setup Instructions
 
